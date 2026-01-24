@@ -1,0 +1,28 @@
+<!-- <div>
+  @for (product of products; track product.sku) {
+    <p>{{ product.name }}: {{ product.unitPrice | currency: 'USD' }}</p>
+  }
+</div> -->
+
+<div>
+  <table class="table table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Price</th>
+        <th class="text-center">Units In Stock</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>
+          <img src="{{ product.imageUrl }}" alt="placeholder image for product" height="50">
+        </td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.unitPrice | currency: 'USD' }}</td>
+        <td class="text-center">{{ product.unitsInStock }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

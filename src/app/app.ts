@@ -6,6 +6,7 @@ import { Component, signal } from '@angular/core';
   standalone: false,
   styleUrl: './app.css'
 })
+
 export class App {
   protected readonly title = signal('angular-ecommerce');
 }
