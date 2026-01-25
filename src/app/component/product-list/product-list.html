@@ -1,28 +1,19 @@
-<!-- <div>
-  @for (product of products; track product.sku) {
-    <p>{{ product.name }}: {{ product.unitPrice | currency: 'USD' }}</p>
-  }
-</div> -->
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <div class="row">
 
-<div>
-  <table class="table table-hover align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Price</th>
-        <th class="text-center">Units In Stock</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let product of products">
-        <td>
-          <img src="{{ product.imageUrl }}" alt="placeholder image for product" height="50">
-        </td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.unitPrice | currency: 'USD' }}</td>
-        <td class="text-center">{{ product.unitsInStock }}</td>
-      </tr>
-    </tbody>
-  </table>
+        <!-- PRODUCT LOOP & DISPLAY -->
+        <div *ngFor="let product of products" class="col-md-3">
+          <div class="product-box">
+            <img src="{{ product.imageUrl }}" alt="{{ product.name }}" class="img-responsive">
+            <h1>{{ product.name }}</h1>
+            <p class="price mb-2">{{ product.unitPrice | currency: 'USD'}}</p>
+            <a href="#" class="btn btn-primary">Add to cart</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>

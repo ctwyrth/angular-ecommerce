@@ -5,6 +5,8 @@ import { App } from './app';
 import { ProductList } from './component/product-list/product-list';
 import { provideHttpClient } from '@angular/common/http';
 import { ProductService } from './services/product-service';
+import { provideRouter, RouterOutlet, RouterLinkWithHref, RouterLinkActive } from '@angular/router';
+import { routes } from './app.routes';
 
 @NgModule({
   declarations: [
@@ -13,10 +15,14 @@ import { ProductService } from './services/product-service';
   ],
   imports: [
     BrowserModule,
-  ],
+    RouterOutlet,
+    RouterLinkWithHref,
+    RouterLinkActive
+],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
+    provideRouter(routes),
     ProductService,
   ],
   bootstrap: [App]
