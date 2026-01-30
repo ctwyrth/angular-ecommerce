@@ -9,12 +9,14 @@ import { ProductService } from './services/product-service';
 import { provideRouter, RouterOutlet, RouterLinkWithHref, RouterLinkActive } from '@angular/router';
 import { routes } from './app.routes';
 import { ProductCategoryMenu } from './component/product-category-menu/product-category-menu';
+import { Search } from './component/search/search';
 
 @NgModule({
   declarations: [
     App,
     ProductList,
-    ProductCategoryMenu
+    ProductCategoryMenu,
+    Search
   ],
   imports: [
     CommonModule,

@@ -2,7 +2,8 @@
   <div class="section-content section-content-p30">
     <div class="container-fluid">
       <div class="row">
-        <h3 class="mb-3">Category: {{ currentCategoryName }}</h3>
+        <h3 *ngIf="!searchMode" class="mb-3">Category: {{ currentCategoryName }}</h3>
+        <h3 *ngIf="searchMode" class="mb-3">Search Results for: {{ currentKeyword }}</h3>
         <hr class="mb-4">
 
         <!-- PRODUCT LOOP & DISPLAY -->

@@ -15,47 +15,66 @@ export class ProductList implements OnInit {
 
   products: Product[] = [];
   currentCategoryName: string = "All";
-  // currentCategoryId: number = 1;
+  searchMode: boolean = false;
+  currentKeyword: string = "";
 
   constructor(private productService: ProductService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
-      // map(params => params.has('id') ? +params.get('id')! : -1),
       map(params => {
-        if (params.has('id')) {
-          this.currentCategoryName = params.get('name')!;
-          return +params.get('id')!;
-        } else {
-          return -1;
-        }
-      }),
+        const keyword = params.get('keyword');
+        const categoryId = params.get('id');
+        const categoryName = params.get('name');
 
-      switchMap(categoryId => this.productService.getProductList(categoryId))
+        return {
+          searchMode: !!keyword,
+          keyword: keyword || "",
+          categoryId: categoryId ? +categoryId : -1,
+          categoryName: categoryName || "All"
+        };
+      }),
+      switchMap(routeData => {
+        this.searchMode = routeData.searchMode;
+
+        if (routeData.searchMode) {
+          this.currentKeyword = routeData.keyword;
+          return this.productService.searchProducts(routeData.keyword);
+        } else {
+          this.currentCategoryName = routeData.categoryName;
+          return this.productService.getProductList(routeData.categoryId);
+        }
+      })
     ).subscribe(products => {
       this.products = products;
       this.cdr.detectChanges();
     });
+
+    // this.route.paramMap.subscribe(params => {
+    //   this.searchMode = params.has('keyword');
+
+    //   // this.searchMode = this.route.snapshot.paramMap.has('keyword');
+    //   if (this.searchMode) {
+    //     const keyword = params.get('keyword')!;
+    //     this.currentKeyword = keyword;
+    //     this.handleSearchProducts(keyword);
+    //   } else {
+    //     const categoryId = params.has('id') ? +params.get('id')! : -1;
+    //     this.currentCategoryName = params.get('name') ?? "All";
+    //     this.handleListProducts(categoryId);
+    //   }
+    // });
   }
 
-
-  // listProducts(params: ParamMap) {
-
-  //   // check if id param is available
-  //   const hasCategory: boolean = params.has('id');
-
-  //   if (hasCategory) {
-  //     this.currentCategoryId = +params.get('id')!;
-  //   } else {
-  //     this.currentCategoryId = -1;
-  //   }
-
-  //   console.log(this.currentCategoryId);
-
-  //   this.productService.getProductList(this.currentCategoryId).subscribe(data => {
-  //     this.products = data;
-  //     console.log(data);
-  //   })
+  // handleListProducts(categoryId: number) {
+  //   this.productService.getProductList(categoryId).subscribe(products => {
+  //     this.products = products;
+  //   });
   // }
 
+  // handleSearchProducts(keyword: string) {
+  //   this.productService.searchProducts(keyword).subscribe(products => {
+  //     this.products = products;
+  //   });
+  // }
 }
