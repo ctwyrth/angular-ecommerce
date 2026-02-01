@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs';
+
 import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
 
@@ -34,12 +35,37 @@ export class ProductService {
     return this.http.get<GetResponseProductCategory>(this.categoryUrl).pipe(map(response => response._embedded.productCategory));
   }
 
-  searchProducts(theKeyword: string): Observable<Product[]> {
+  searchProducts(theKeyword: string): Observable<GetResponseProducts> {
     let searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}`;
 
-    return this.getProducts(searchUrl);
+    return this.http.get<GetResponseProducts>(searchUrl);
   }
 
+  getProductById(theProductId: number): Observable<Product> {
+    const productUrl = `${this.baseUrl}/${theProductId}`;
+
+    return this.http.get<Product>(productUrl);
+  }
+
+  getProductListPaginate(thePage: number, thePageSize: number, theCategoryId: number): Observable<GetResponseProducts> {
+    let searchUrl = "";
+
+    if (theCategoryId == -1) {
+      searchUrl = `${this.baseUrl}?page=${thePage}&size=${thePageSize}`;
+    } else {
+      searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}&page=${thePage}&size=${thePageSize}`;
+    }
+
+    // let url = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}&page=${thePage}&size=${thePageSize}`;
+
+    return this.http.get<GetResponseProducts>(searchUrl);
+  }
+
+  searchProductPaginate(thePage: number, thePageSize: number, theKeyword: string): Observable<GetResponseProducts> {
+    let searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}&page=${thePage}&size=${thePageSize}`;
+
+    return this.http.get<GetResponseProducts>(searchUrl);
+  }
 
   private getProducts(searchUrl: string): Observable<Product[]> {
     return this.http.get<GetResponseProducts>(searchUrl).pipe(map(response => response._embedded.products));
@@ -50,6 +76,12 @@ interface GetResponseProducts {
 
   _embedded: {
     products: Product[];
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 
 }

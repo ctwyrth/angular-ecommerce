@@ -1,8 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { map, Observable, switchMap } from 'rxjs';
+
 import { ProductService } from '../../services/product-service';
 import { Product } from '../../common/product';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { CartService } from '../../services/cart-service';
+import { CartItem } from '../../common/cart-item';
 
 @Component({
   selector: 'app-product-list',
@@ -17,10 +20,27 @@ export class ProductList implements OnInit {
   currentCategoryName: string = "All";
   searchMode: boolean = false;
   currentKeyword: string = "";
+  previousCategoryId: number = -1;
 
-  constructor(private productService: ProductService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  // pagination properties
+  pageNumber: number = 1;
+  pageSize: number = 10;
+  totalElements: number = 0;
+
+  constructor(private productService: ProductService, private cartService: CartService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+
+    this.listProducts();
+
+  }
+
+  addToCart(product: Product) {
+    this.cartService.addToCart(new CartItem(product.id, product.name, product.imageUrl, product.unitPrice, 1));
+    console.log(`Adding to cart: ${product.name}, ${product.unitPrice}`);
+  }
+
+  listProducts() {
     this.route.paramMap.pipe(
       map(params => {
         const keyword = params.get('keyword');
@@ -30,51 +50,49 @@ export class ProductList implements OnInit {
         return {
           searchMode: !!keyword,
           keyword: keyword || "",
-          categoryId: categoryId ? +categoryId : -1,
-          categoryName: categoryName || "All"
+          categoryId: categoryId ? +categoryId : this.previousCategoryId,
+          categoryName: categoryName || this.currentCategoryName,
+          pageNumber: this.pageNumber,
+          pageSize: this.pageSize
         };
       }),
       switchMap(routeData => {
         this.searchMode = routeData.searchMode;
 
         if (routeData.searchMode) {
+          if (this.currentKeyword != routeData.keyword) {
+            this.pageNumber = 1;
+          }
+
           this.currentKeyword = routeData.keyword;
-          return this.productService.searchProducts(routeData.keyword);
+
+          return this.productService.searchProductPaginate(routeData.pageNumber - 1, routeData.pageSize, routeData.keyword);
         } else {
+          if (this.previousCategoryId != routeData.categoryId) {
+            this.pageNumber = 1;
+          }
+
+          this.previousCategoryId = routeData.categoryId;
           this.currentCategoryName = routeData.categoryName;
-          return this.productService.getProductList(routeData.categoryId);
+
+          return this.productService.getProductListPaginate(routeData.pageNumber - 1, routeData.pageSize, routeData.categoryId);
         }
       })
-    ).subscribe(products => {
-      this.products = products;
+    ).subscribe(data => {
+      this.products = data._embedded.products;
+      this.totalElements = data.page.totalElements;
+      this.pageSize = data.page.size;
+      this.pageNumber = data.page.number + 1;
       this.cdr.detectChanges();
     });
-
-    // this.route.paramMap.subscribe(params => {
-    //   this.searchMode = params.has('keyword');
-
-    //   // this.searchMode = this.route.snapshot.paramMap.has('keyword');
-    //   if (this.searchMode) {
-    //     const keyword = params.get('keyword')!;
-    //     this.currentKeyword = keyword;
-    //     this.handleSearchProducts(keyword);
-    //   } else {
-    //     const categoryId = params.has('id') ? +params.get('id')! : -1;
-    //     this.currentCategoryName = params.get('name') ?? "All";
-    //     this.handleListProducts(categoryId);
-    //   }
-    // });
   }
 
-  // handleListProducts(categoryId: number) {
-  //   this.productService.getProductList(categoryId).subscribe(products => {
-  //     this.products = products;
-  //   });
-  // }
-
-  // handleSearchProducts(keyword: string) {
-  //   this.productService.searchProducts(keyword).subscribe(products => {
-  //     this.products = products;
-  //   });
-  // }
+  updatePageSize(pageSize: string) {
+    this.pageSize = +pageSize;
+    this.pageNumber = 1;
+    this.listProducts();
+  }
 }
+
+
+

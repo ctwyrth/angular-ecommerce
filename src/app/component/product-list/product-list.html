@@ -9,13 +9,47 @@
         <!-- PRODUCT LOOP & DISPLAY -->
         <div *ngFor="let product of products" class="col-md-3">
           <div class="product-box">
-            <img src="{{ product.imageUrl }}" alt="{{ product.name }}" class="img-responsive">
-            <h1>{{ product.name }}</h1>
+            <a routerLink="/products/{{ product.id }}">
+              <img src="{{ product.imageUrl }}" alt="{{ product.name }}" class="img-responsive">
+            </a>
+            <a routerLink="/products/{{ product.id }}">
+              <h1>{{ product.name }}</h1>
+            </a>
             <p class="price mb-2">{{ product.unitPrice | currency: 'USD'}}</p>
-            <a href="#" class="btn btn-primary">Add to cart</a>
+            <button class="btn btn-primary btn-sm" (click)="addToCart(product)">Add to Cart</button>
           </div>
         </div>
 
+        <div *ngIf="products.length == 0" class="alert alert-warning col-md-12" role="alert">
+          No products found.
+        </div>
+
+      </div>
+
+      <div class="footer-pagination">
+        <div class="row mt-4">
+          <div class="col-md-12 d-flex align-items-start justify-content-center">
+            <ngb-pagination
+              [collectionSize]="totalElements"
+              [(page)]="pageNumber"
+              [pageSize]="pageSize"
+              [maxSize]="5"
+              [boundaryLinks]="true"
+              [rotate]="true"
+              (pageChange)="listProducts()">
+            </ngb-pagination>
+            <div class="col-md-3 d-flex align-items-center justify-content-end ms-3">
+              <span class="mr-2">Page Size: </span>
+              <select #myPageSelect (change)="updatePageSize(myPageSelect.value)" class="form-select w-25 ms-3">
+                <option value="2">2</option>
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
