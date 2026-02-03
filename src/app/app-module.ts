@@ -14,6 +14,8 @@ import { Search } from './component/search/search';
 import { ProductDetails } from './component/product-details/product-details';
 import { CartStatus } from './component/cart-status/cart-status';
 import { CartDetails } from './component/cart-details/cart-details';
+import { Checkout } from './component/checkout/checkout';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { CartDetails } from './component/cart-details/cart-details';
     Search,
     ProductDetails,
     CartStatus,
-    CartDetails
+    CartDetails,
+    Checkout
   ],
   imports: [
     CommonModule,
@@ -31,7 +34,8 @@ import { CartDetails } from './component/cart-details/cart-details';
     RouterOutlet,
     RouterLinkWithHref,
     RouterLinkActive,
-    NgbModule
+    NgbModule,
+    ReactiveFormsModule
 ],
   providers: [
     provideBrowserGlobalErrorListeners(),

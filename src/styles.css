@@ -957,23 +957,23 @@ footer ul li{
     }
     .header-button-item{
         font-size:22px;
-        margin-right:15px
+        margin-right:15px;
     }
         .main-content.page-m{
-        padding:10% 0!important
+        padding:10% 30% 10% 5%;
     }
     .header-mobile .navbar-mobile{
         display:none;
         position:absolute;
         width:100%;
         top:66px;
-        z-index:20
+        z-index:20;
     }
     .section-content.section-content-p30.e-spc{
-        padding-top:100px
+        padding-top:100px;
     }
     header.header-desktop.extra{
-        top:64px!important
+        top:64px!important;
     }
     .header-desktop{
         position:relative;

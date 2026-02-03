@@ -1,1 +1,49 @@
-<p>cart-details works!</p>
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div *ngIf="cartItems.length > 0">
+      <table class="table table-bordered">
+        <tr>
+          <th width="20%">Product Image</th>
+          <th width="50%">Product Detail</th>
+          <th width="30%"></th>
+        </tr>
+        <tr *ngFor="let cartItem of cartItems">
+          <td>
+            <img src="{{ cartItem.imageUrl }}" alt="{{ cartItem.name }}" class="img-responsive" width="150px">
+          </td>
+          <td>
+            <h5>{{ cartItem.name }}</h5>
+            <p>Unit Price: {{ cartItem.unitPrice | currency: 'USD'}}</p>
+          </td>
+          <td>
+            <div class="items">
+              <label class="fw-bold me-2">Quantity:</label>
+              <button class="btn btn-primary btn-sm" (click)="incrementQuantity(cartItem)"><i class="fas fa-plus"></i></button>
+              <span class="ms-3 me-3">{{ cartItem.quantity }}</span>
+              <button class="btn btn-primary btn-sm" (click)="decrementQuantity(cartItem)"><i class="fas fa-minus"></i></button>
+              <button class="btn btn-danger btn-sm ms-2" (click)="removeFromCart(cartItem)"><i class="fas fa-trash"></i></button>
+            </div>
+            <p class="mt-2">Subtotal: {{ (cartItem.unitPrice * cartItem.quantity) | currency: 'USD'}}</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td>
+            <p><span class="fw-bolder">Total Quantity:</span> {{ totalQuantity }}</p>
+            <p><span class="fw-bolder">Shipping:</span> FREE</p>
+            <p><span class="fw-bolder">Total Price:</span> {{ totalPrice | currency: 'USD' }}</p>
+            <div class="mb-3">
+              <a routerLink="/checkout" class="btn btn-success btn-sm w-50 mx-auto">Checkout</a>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div *ngIf="cartItems.length === 0" class="alert alert-warning fw-bolder" role="alert">
+      Your cart is empty.
+    </div>
+    <div class="row mt-5">
+      <a routerLink="/products" class="btn btn-secondary btn-sm w-50 mx-auto">Continue Shopping</a>
+    </div>
+  </div>
+</div>
