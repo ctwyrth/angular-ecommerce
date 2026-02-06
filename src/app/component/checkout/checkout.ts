@@ -56,19 +56,21 @@ export class Checkout implements OnInit {
       })
     });
 
-    this.cartService.totalPrice.subscribe(
-      data => {
-        this.totalPrice = data;
-        this.cdr.detectChanges();
-      }
-    );
+    this.reviewCartDetails();
 
-    this.cartService.totalQuantity.subscribe(
-      data => {
-        this.totalQuantity = data;
-        this.cdr.detectChanges();
-      }
-    );
+    // this.cartService.totalPrice.subscribe(
+    //   data => {
+    //     this.totalPrice = data;
+    //     this.cdr.detectChanges();
+    //   }
+    // );
+
+    // this.cartService.totalQuantity.subscribe(
+    //   data => {
+    //     this.totalQuantity = data;
+    //     this.cdr.detectChanges();
+    //   }
+    // );
 
     this.cartService.computeCartTotals();
 
@@ -89,6 +91,14 @@ export class Checkout implements OnInit {
       }
     );
 
+  }
+
+  reviewCartDetails() {
+    this.cartService.totalPrice.subscribe(
+      data => this.totalPrice = data);
+
+    this.cartService.totalQuantity.subscribe(
+      data => this.totalQuantity = data);
   }
 
   getStates(formGroupName: string) {
